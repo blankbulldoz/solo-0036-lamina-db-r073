@@ -93,6 +93,16 @@ curl -s http://127.0.0.1:7386/v1/lamina/backup -o /tmp/lamina-backup.lmi
 
 错误 JSON 为 `{"error":{"code":"...","message":"..."}}`。无效输入 400，已关闭或未知事务及缺失行 404，写冲突或唯一冲突 409，快照和变更历史不可用 410，容量拒绝 429，存储不确定或已关闭 503。`GET /stats` 返回会话、版本、候选索引大小、恢复尾字节等领域事实，进程计数在重启后归零。
 
+## 教学对照资料
+
+`docs/` 提供查询语义的教学对照，帮助使用者根据事务历史自行算出 null、同值排序和 count/sum 的答案：
+
+- `docs/query-semantics-guide.md`：核心篇。规则速查、一条共享输入历史，以及 null 匹配、排序、暂存视图、聚合边界、回收水位五组场景；每个场景给出参与者请求、从历史的独立推算、真实运行事实和适用界限。
+- `docs/query-semantics-extended.md`：扩展篇。访问路径事实、提交边界、唯一约束时机、SQL 词法层差异、可算范围随备份图像与重启的行为。
+- `docs/coverage-comparison.md`：两档材料各自能排除的错误假设清单与代价对照。
+
+`python3 examples/semantics_probe.py --group all` 在临时实例上重放全部场景，把从输入历史独立算出的期望与真实观测逐条对照。它是教学演示，不是基线测试套件。
+
 ## 容器
 
 ```sh
